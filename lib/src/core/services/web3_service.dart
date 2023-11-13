@@ -71,9 +71,9 @@ class Web3Service {
       );
 
       return posts;
-    } catch (error, trace) {
-      print("error $error");
-      print("trace $trace");
+    } catch (error, _) {
+      // print("error $error");
+      // print("trace $trace");
     }
 
     return [];

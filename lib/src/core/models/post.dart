@@ -24,7 +24,7 @@ class Post {
     String? title,
     String? description,
     String? imageUrl,
-    dynamic? author,
+    dynamic author,
     BigInt? createdAt,
     BigInt? updatedAt,
   }) {
