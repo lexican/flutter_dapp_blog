@@ -134,4 +134,27 @@ class Web3Service {
     );
     return true;
   }
+
+  Future<bool> deletePost({
+    required BigInt uid,
+  }) async {
+    Credentials key = await getCredentials();
+
+    int networkId = await _ethClient.getNetworkId();
+
+    final contract = await _getContract();
+
+    await _ethClient.sendTransaction(
+      key,
+      Transaction.callContract(
+        contract: contract,
+        function: contract.function("deletePost"),
+        parameters: [
+          uid,
+        ],
+      ),
+      chainId: networkId,
+    );
+    return true;
+  }
 }
