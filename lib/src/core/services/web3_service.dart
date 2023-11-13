@@ -105,4 +105,33 @@ class Web3Service {
     );
     return true;
   }
+
+  Future<bool> updatePost({
+    required String title,
+    required String description,
+    required String imageUrl,
+    required BigInt uid,
+  }) async {
+    Credentials key = await getCredentials();
+
+    int networkId = await _ethClient.getNetworkId();
+
+    final contract = await _getContract();
+
+    await _ethClient.sendTransaction(
+      key,
+      Transaction.callContract(
+        contract: contract,
+        function: contract.function("updatePost"),
+        parameters: [
+          title,
+          description,
+          imageUrl,
+          uid,
+        ],
+      ),
+      chainId: networkId,
+    );
+    return true;
+  }
 }
