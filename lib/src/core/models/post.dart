@@ -1,0 +1,98 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:convert';
+
+class Post {
+  BigInt postId;
+  String title;
+  String description;
+  String imageUrl;
+  dynamic author;
+  BigInt createdAt;
+  BigInt updatedAt;
+  Post({
+    required this.postId,
+    required this.title,
+    required this.description,
+    required this.imageUrl,
+    required this.author,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+
+  Post copyWith({
+    BigInt? postId,
+    String? title,
+    String? description,
+    String? imageUrl,
+    dynamic? author,
+    BigInt? createdAt,
+    BigInt? updatedAt,
+  }) {
+    return Post(
+      postId: postId ?? this.postId,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      imageUrl: imageUrl ?? this.imageUrl,
+      author: author ?? this.author,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'postId': postId,
+      'title': title,
+      'description': description,
+      'imageUrl': imageUrl,
+      'author': author,
+      'createdAt': createdAt,
+      'updatedAt': updatedAt,
+    };
+  }
+
+  factory Post.fromMap(Map<String, dynamic> map) {
+    return Post(
+        postId: map['postId'],
+        title: map['title'] as String,
+        description: map['description'] as String,
+        imageUrl: map['imageUrl'] as String,
+        author: map['author'] as dynamic,
+        createdAt: map['createdAt'],
+        updatedAt: map['updatedAt']);
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory Post.fromJson(String source) =>
+      Post.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  @override
+  String toString() {
+    return 'Post(postId: $postId, title: $title, description: $description, imageUrl: $imageUrl, author: $author, createdAt: $createdAt, updatedAt: $updatedAt)';
+  }
+
+  @override
+  bool operator ==(covariant Post other) {
+    if (identical(this, other)) return true;
+
+    return other.postId == postId &&
+        other.title == title &&
+        other.description == description &&
+        other.imageUrl == imageUrl &&
+        other.author == author &&
+        other.createdAt == createdAt &&
+        other.updatedAt == updatedAt;
+  }
+
+  @override
+  int get hashCode {
+    return postId.hashCode ^
+        title.hashCode ^
+        description.hashCode ^
+        imageUrl.hashCode ^
+        author.hashCode ^
+        createdAt.hashCode ^
+        updatedAt.hashCode;
+  }
+}

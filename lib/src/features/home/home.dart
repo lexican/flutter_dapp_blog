@@ -1,5 +1,8 @@
+import 'package:dapp_blog/src/core/services/web3_service.dart';
 import 'package:dapp_blog/src/widgets/blog_item/blog_item.dart';
 import 'package:flutter/material.dart';
+
+import '../../core/models/post.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -9,6 +12,36 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  final Web3Service _web3service = Web3Service();
+  List<Post> posts = [];
+  @override
+  void initState() {
+    super.initState();
+    _web3service.init();
+    getPosts();
+  }
+
+  Future<void> getPosts() async {
+    List<dynamic> allPosts = await _web3service.getPosts();
+
+    for (int i = 0; i < allPosts[0].length; i++) {
+      List<dynamic> postList = allPosts[0][i];
+
+      Post post = Post(
+        postId: postList[0],
+        title: postList[1],
+        description: postList[2],
+        imageUrl: postList[3],
+        author: postList[4],
+        createdAt: postList[5],
+        updatedAt: postList[6],
+      );
+
+      posts.add(post);
+    }
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,14 +52,13 @@ class _HomeState extends State<Home> {
           "dApp Blog",
         ),
       ),
-      body: ListView(
-        padding: EdgeInsets.zero,
-        children: const [
-          BlogItem(),
-          BlogItem(),
-          BlogItem(),
-          BlogItem(),
-        ],
+      body: ListView.builder(
+        itemCount: posts.length,
+        itemBuilder: (context, index) {
+          return BlogItem(
+            post: posts[index],
+          );
+        },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
