@@ -78,4 +78,31 @@ class Web3Service {
 
     return [];
   }
+
+  Future<bool> createPost({
+    required String title,
+    required String description,
+    required String imageUrl,
+  }) async {
+    Credentials key = await getCredentials();
+
+    int networkId = await _ethClient.getNetworkId();
+
+    final contract = await _getContract();
+
+    await _ethClient.sendTransaction(
+      key,
+      Transaction.callContract(
+        contract: contract,
+        function: contract.function("createPost"),
+        parameters: [
+          title,
+          description,
+          imageUrl,
+        ],
+      ),
+      chainId: networkId,
+    );
+    return true;
+  }
 }

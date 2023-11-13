@@ -1,4 +1,5 @@
 import 'package:dapp_blog/src/core/services/web3_service.dart';
+import 'package:dapp_blog/src/core/utils/app_utils.dart';
 import 'package:dapp_blog/src/widgets/blog_item/blog_item.dart';
 import 'package:flutter/material.dart';
 
@@ -13,7 +14,14 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   final Web3Service _web3service = Web3Service();
-  List<Post> posts = [];
+  final TextEditingController _titleTextEditingController =
+      TextEditingController();
+  final TextEditingController _descriptionTextEditingController =
+      TextEditingController();
+  final TextEditingController _postImageUrlTextEditingController =
+      TextEditingController();
+  List<Post> _posts = [];
+
   @override
   void initState() {
     super.initState();
@@ -22,7 +30,9 @@ class _HomeState extends State<Home> {
   }
 
   Future<void> getPosts() async {
+    _posts.clear();
     List<dynamic> allPosts = await _web3service.getPosts();
+    List<Post> postItems = [];
 
     for (int i = 0; i < allPosts[0].length; i++) {
       List<dynamic> postList = allPosts[0][i];
@@ -37,9 +47,55 @@ class _HomeState extends State<Home> {
         updatedAt: postList[6],
       );
 
-      posts.add(post);
+      postItems.add(post);
     }
-    setState(() {});
+    setState(() {
+      _posts = List.from(postItems.reversed);
+    });
+  }
+
+  Future<void> createPost() async {
+    String title = _titleTextEditingController.text;
+    String desciption = _descriptionTextEditingController.text;
+    String postImageUrl = _postImageUrlTextEditingController.text;
+
+    if (title.isNotEmpty && desciption.isNotEmpty && postImageUrl.isNotEmpty) {
+      showSnackBar(
+        context,
+        "Creating post",
+        Colors.black,
+      );
+      bool addPost = await _web3service.createPost(
+        title: title,
+        description: desciption,
+        imageUrl: postImageUrl,
+      );
+
+      if (addPost) {
+        clearTextFields();
+        Future.delayed(
+          const Duration(
+            seconds: 15,
+          ),
+          () async {
+            await getPosts();
+            // ignore: use_build_context_synchronously
+            showSnackBar(
+              context,
+              "Post created successfully",
+              Colors.green,
+            );
+          },
+        );
+        // ignore: use_build_context_synchronously
+      }
+    }
+  }
+
+  void clearTextFields() {
+    _titleTextEditingController.clear();
+    _descriptionTextEditingController.clear();
+    _postImageUrlTextEditingController.clear();
   }
 
   @override
@@ -53,16 +109,18 @@ class _HomeState extends State<Home> {
         ),
       ),
       body: ListView.builder(
-        itemCount: posts.length,
+        itemCount: _posts.length,
         itemBuilder: (context, index) {
           return BlogItem(
-            post: posts[index],
+            post: _posts[index],
           );
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        tooltip: 'Increment',
+        onPressed: () {
+          showCreatePostModalBottomSheet();
+        },
+        tooltip: 'Create Post',
         child: const Icon(Icons.add),
       ),
     );
@@ -88,6 +146,26 @@ class _HomeState extends State<Home> {
                       horizontal: 20,
                     ),
                     child: TextField(
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        filled: true,
+                        hintStyle: TextStyle(color: Colors.grey[800]),
+                        hintText: "Title",
+                        fillColor: Colors.white70,
+                      ),
+                      controller: _titleTextEditingController,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                    ),
+                    child: TextField(
                       maxLines: 4,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
@@ -95,9 +173,10 @@ class _HomeState extends State<Home> {
                         ),
                         filled: true,
                         hintStyle: TextStyle(color: Colors.grey[800]),
-                        hintText: "What's on your mind?",
+                        hintText: "Description",
                         fillColor: Colors.white70,
                       ),
+                      controller: _descriptionTextEditingController,
                     ),
                   ),
                   const SizedBox(
@@ -117,6 +196,7 @@ class _HomeState extends State<Home> {
                         hintText: "Post image url",
                         fillColor: Colors.white70,
                       ),
+                      controller: _postImageUrlTextEditingController,
                     ),
                   ),
                   const SizedBox(
@@ -141,7 +221,11 @@ class _HomeState extends State<Home> {
                               foregroundColor: MaterialStateProperty.all<Color>(
                                   Colors.white),
                             ),
-                            onPressed: () {},
+                            onPressed: () async {
+                              await createPost();
+                              // ignore: use_build_context_synchronously
+                              Navigator.of(context).pop();
+                            },
                             child: const Text(
                               'Post',
                               style: TextStyle(
@@ -161,5 +245,13 @@ class _HomeState extends State<Home> {
         );
       },
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _titleTextEditingController.dispose();
+    _descriptionTextEditingController.dispose();
+    _postImageUrlTextEditingController.dispose();
   }
 }
