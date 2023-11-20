@@ -2,15 +2,44 @@
 
 A dApp Blog
 
-## Getting Started
+This decentralized App is built with Flutter and Solidity
 
-This project is a starting point for a Flutter application.
+## Features
 
-A few resources to get you started if this is your first Flutter project:
+- Create post
+- View all posts
+- Update posts
+- Delete post
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+<br>
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Screenshots
+
+### Home and Create Post
+
+<img src="screenshots/home.png" height="500em" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="screenshots/create_post.png" height="500em" />
+
+## ✨ Requirements
+
+- Any Operating System (ie. MacOS X, Linux, Windows)
+- Any IDE with Flutter SDK installed (ie. Android Studio, VSCode, IntelliJ, etc)
+- A little knowledge of Dart and Flutter
+
+
+## Run Locally
+
+Rename ._env file inside the root directory to .env and provide the details below.
+```bash
+    INFURA_API_KEY = 
+    CONTRACT_ADDRESS = 
+    PRIVATE_KEY =
+```
+
+Run the App
+
+```bash
+  git clone https://github.com/lexican/flutter_dapp_blog.git
+  cd flutter_dapp_blog
+  flutter pub get
+  flutter run
+```
